@@ -41,7 +41,7 @@ class Class:
        return self.attributes
        
     def getMethods(self):
-        return self.method
+        return self.methods
     
     def getModifiers(self):
         return self.modifiers
@@ -50,7 +50,7 @@ class Class:
         self.name = name
         
     def updateAttributes(self, attr):
-        self.attribute.append(attr)
+        self.attributes.append(attr)
 
     def updateMethods(self, met):
         self.methods.append(met)
@@ -166,16 +166,14 @@ started = 0 # do not update the dictionary if it is the first loop
 ctype = "none"
 newTypObj = Class("0","",[],[],[])
 otherType = True
-with open("../src/src.mse","r") as f:
+with open("../dataset/src.mse","r") as f:
     for line in f.readlines():
         delta = len(line)-len(line.strip()) # use delta to distinguish if it is an entity name or the attributes in the entity.
-        print delta
-        print line
         line = line.strip()
         if(delta == 2):
             # update the previous object
             if(started == 1):
-                if ctype == "Class":
+                if ctype == "Class" or ctype == "ParameterizableClass":
                     ClassDict[newTypObj.getID()] = newTypObj
                 elif ctype == "Method":
                     MethodDict[newTypObj.getID()] = newTypObj
@@ -188,7 +186,7 @@ with open("../src/src.mse","r") as f:
             if(cmatch):
                 ctype = cmatch.group(1)
                 cid = cmatch.group(2)
-                if ctype == "Class":
+                if ctype == "Class" or ctype == "ParameterizableClass":
                     newTypObj = Class(cid,"",[],[],[])
                     otherType = False
                 elif ctype == "Method":
@@ -221,7 +219,9 @@ with open("../src/src.mse","r") as f:
                         newTypObj.updateName(amatch.group(2))
                     elif aname == "signature":
                         newTypObj.updateSignture(amatch.group(2))
-                    
+        cnt+=1
+        if cnt%100 == 0:
+            print cnt
         
 # we suppose to update the last processed object.
 # But, in our file, the last one is not within the three types we need, so we omit this step
@@ -229,12 +229,16 @@ with open("../src/src.mse","r") as f:
 # after collect all information from file and build three dictionaries, update the class dictionary to match
 for mid in MethodDict:
     cid =  MethodDict[mid].getParentType() # find the parent class id
+    if cid not in ClassDict:
+        continue
     classObj = ClassDict[cid] # get the class object
     classObj.updateMethods(MethodDict[mid]) # ipdate Methods list
     ClassDict[cid] = classObj #update the class dictionary
     
 for aid in AttrDict:
     cid =  AttrDict[aid].getParentType() # find the parent class id
+    if cid not in ClassDict:
+        continue
     classObj = ClassDict[cid] # get the class object
     classObj.updateAttributes(AttrDict[aid]) # update Attributes list
     ClassDict[cid] = classObj #update the dictionary
