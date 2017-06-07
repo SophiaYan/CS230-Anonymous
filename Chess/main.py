@@ -67,5 +67,5 @@ def visitfile(file):
 if __name__ == '__main__':
     dict = {"name": "root", "children" :[], "size":0}
     walktree(os.getcwd() + "/src", visitfile, dict)
-    with open('src.json', 'w') as outfile:
+    with open('src_withChildType.json', 'w') as outfile:
         json.dump(dict, outfile, ensure_ascii=False, sort_keys = False)
