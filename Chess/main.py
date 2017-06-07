@@ -33,8 +33,8 @@ def walktree(top, callback, dict):
         elif S_ISREG(mode):
             # It's a file, call the callback function (leaf node)
             if f.endswith(".java"):
-                # fileNode = parseFile(top, f)
-                fileNode = {"name": f, "size": 100}
+                fileNode = parseFile(top, f)
+                # fileNode = {"name": f, "size": 100}
                 dict["children"].append(fileNode)
                 dict["size"] = dict["size"] + fileNode["size"]
                 callback(f)
