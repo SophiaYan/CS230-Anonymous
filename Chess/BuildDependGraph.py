@@ -7,9 +7,8 @@ Created on Wed Jun  7 14:52:52 2017
 """
 
 def BuildDependGraph(filename):
-    graph = {}
+    graph = []
     toMatch = 'FAMIX.Inheritance'
-    dict = {}
     with open(filename) as f:
         content = f.readlines()
     lines = [x.strip('\n') for x in content]
@@ -30,12 +29,14 @@ def BuildDependGraph(filename):
             superClassId = superClassId.split(')')[0]
             
             print superClassId + "->" + subClassId
-            graph.append({superClassId, subClassId})
+            graph.append((superClassId, subClassId))
             
     return graph
 
 
 if __name__ == '__main__':
-    graph = BuildDependGraph('./src/src/mse')
-    with open('src.json', 'w') as outfile:
-        json.dump(dict, outfile, ensure_ascii=False, sort_keys = False)
+    graph = BuildDependGraph('./src/src.mse')
+    with open('DependenceGraph.txt', 'w') as outfile:
+        for line in graph:
+            outfile.writelines(line)
+            outfile.writelines('\n')
