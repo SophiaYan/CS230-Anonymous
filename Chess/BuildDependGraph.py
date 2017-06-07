@@ -29,14 +29,14 @@ def BuildDependGraph(filename):
             superClassId = superClassId.split(')')[0]
             
             print superClassId + "->" + subClassId
-            graph.append((superClassId, subClassId))
+            graph.append((subClassId, superClassId))
             
     return graph
 
 
 if __name__ == '__main__':
     graph = BuildDependGraph('./src/src.mse')
-    with open('DependenceGraph.txt', 'w') as outfile:
+    with open('sub2super.txt', 'w') as outfile:
         for line in graph:
             outfile.writelines(line)
             outfile.writelines('\n')
