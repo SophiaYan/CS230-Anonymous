@@ -11,37 +11,10 @@ from stat import *
 import json
 from ClassMseParser import *
 
-# allFiles = []
-# num = 1
-# for root, dirnames, filenames in os.walk(os.getcwd() + '/src'):
-# 	for fname in fnmatch.filter(filenames, '*.java'):
-# 		filename = os.path.join(root, fname)
-# 		# current file name
-# 		cur = filename.rsplit('/', 2)[1] + '/' + fname + ':'
-
-# 		with open(filename) as f:
-# 			content = f.readlines()
-# 		lines = [x.strip('\n') for x in content]
-# 		for i,line in enumerate(lines):
-# 			index = line.find(' class ')
-# 			if (index != -1):
-# 				index = index + 7
-# 				line = line[index:]
-# 				# find all class names in the file
-# 				className = line.split(' ')[0]
-# 				cur = cur + ' ' + className
-# 				print num
-# 				num = num + 1
-# 				print cur
-# 				allFiles.append(str(cur))
-
-# with open('ParseRes.csv','wb') as myfile:
-# 	wr = csv.writer(myfile, quoting = csv.QUOTE_ALL)
-# 	wr.writerow(allFiles)
-
-#os.chdir(os.getcwd() + "/src/controller")
-#for filename in glob.glob("*.java"):
-#    print filename
+# Recursively generate .json file by DFS
+# Input: All the files under workingDir/src
+# Ouptput: src.json (dict)
+# Please run it under the directory above /src
     
 def walktree(top, callback, dict):
     '''recursively descend the directory tree rooted at top,
@@ -56,25 +29,30 @@ def walktree(top, callback, dict):
             subdict = {"name": f, "children" :[], "size": 0}
             walktree(pathname, callback, subdict)
             dict["children"].append(subdict)
+            dict["size"] = dict["size"] + subdict["size"]
         elif S_ISREG(mode):
             # It's a file, call the callback function (leaf node)
             if f.endswith(".java"):
-                subdict = parseFile(top, f)
-                dict["children"].append(subdict)
+                fileNode = parseFile(top, f)
+                dict["children"].append(fileNode)
+                dict["size"] = dict["size"] + fileNode["size"]
                 callback(f)
         else:
             # Unknown file type, print a message
             print 'Skipping %s' % pathname
-
+        
 
 def parseFile(dir, filename):
     fileNode = {"name": filename, "children": [], "size" : 0}
     pathname = os.path.join(dir, filename)
     filename = pathname.rsplit('/', 2)[1] + '/' + filename
     classIds = file2class[filename]
+    fileSize = 0
     for classId in classIds:
         classNode = ClassMseParser(classId,ClassDict)
         fileNode["children"].append(classNode)
+        fileSize = fileSize + int(classNode["size"])
+    fileNode["size"] = fileSize
     return fileNode
     
 def parseClass(className, classId):

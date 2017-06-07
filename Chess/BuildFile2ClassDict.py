@@ -5,6 +5,12 @@ Created on Tue Jun 06 18:38:56 2017
 @author: Jingyu
 """
 
+# Input: MSE file
+# Output: dictionary / mapping between file and class
+# Output Data Structure:
+    # File : {ClassID : ClassName}
+
+
 def BuildFile2ClassDict(filename):
     toMatch = 'FAMIX.Class'
     dict = {}

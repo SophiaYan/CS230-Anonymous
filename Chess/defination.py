@@ -18,7 +18,7 @@ class Class:
     modifiers = []
     methods = []
     attributes = []
-    loc = 0
+    loc = 1
     
     def __init__(self, id, name, modifiers, methods, attributes):
        self.ID = id
@@ -78,7 +78,7 @@ class Method:
     modifiers = []
     parentType = ""
     signature = ""
-    loc = 0
+    loc = 1
     
     def __init__(self,id,name,modifiers,parenttype, signature):
         self.ID = id
@@ -132,7 +132,7 @@ class Attribute:
     name = ""
     modifiers = []
     parentType = ""
-    loc = 0
+    loc = 1
     
     def __init__(self,id,name,modifiers,parenttype):
         self.ID = id
