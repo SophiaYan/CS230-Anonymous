@@ -17,13 +17,13 @@ def ClassMseParser(cid, ClassDict):
         #return -1
     classObj = ClassDict[cid]
     
-    dict = {"name":classObj.getName(),"children":[],"size":0}
+    dict = {"name":classObj.getName(),"children":[],"size":classObj.getLOC()}
     for methodObj in classObj.getMethods():
-        subDict = {"name":methodObj.getName(),"size":0, "childtype":"Method"}
+        subDict = {"name":methodObj.getName(),"size":methodObj.getLOC(), "childtype":"Method"}
         dict["children"].append(subDict)
     
     for attrObj in classObj.getAttributes():
-        subDict = {"name":attrObj.getName(),"size":0, "childtype":"Attribute"}
+        subDict = {"name":attrObj.getName(),"size":attrObj.getLOC(), "childtype":"Attribute"}
         dict["children"].append(subDict)
     return dict
 

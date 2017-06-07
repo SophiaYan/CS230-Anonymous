@@ -18,6 +18,7 @@ class Class:
     modifiers = []
     methods = []
     attributes = []
+    loc = 0
     
     def __init__(self, id, name, modifiers, methods, attributes):
        self.ID = id
@@ -25,6 +26,7 @@ class Class:
        self.modifiers = modifiers
        self.methods = methods
        self.attributes = attributes
+
     
     def getID(self):
         return self.ID
@@ -40,6 +42,12 @@ class Class:
     
     def getModifiers(self):
         return self.modifiers
+        
+    def getLOC(self):
+        return self.loc
+        
+    def updateLOC(self,loc):
+        self.loc = loc
        
     def updateName(self,name):
         self.name = name
@@ -52,6 +60,7 @@ class Class:
        
     def updateModifiers(self,mod):
         self.modifiers.append(mod)
+    
     
     
   
@@ -69,6 +78,7 @@ class Method:
     modifiers = []
     parentType = ""
     signature = ""
+    loc = 0
     
     def __init__(self,id,name,modifiers,parenttype, signature):
         self.ID = id
@@ -76,7 +86,7 @@ class Method:
         self.modifiers = modifiers
         self.parentType = parenttype
         self.signature = signature
-        
+
     def getID(self):
         return self.ID
         
@@ -91,6 +101,12 @@ class Method:
     
     def getParentType(self):
         return self.parentType
+        
+    def getLOC(self):
+        return self.loc
+        
+    def updateLOC(self,loc):
+        self.loc = loc
         
     def updateName(self, name):
         self.name = name
@@ -116,6 +132,7 @@ class Attribute:
     name = ""
     modifiers = []
     parentType = ""
+    loc = 0
     
     def __init__(self,id,name,modifiers,parenttype):
         self.ID = id
@@ -134,6 +151,12 @@ class Attribute:
     
     def getParentType(self):
         return self.parentType
+        
+    def getLOC(self):
+        return self.loc
+        
+    def updateLOC(self,loc):
+        self.loc = loc
      
     def updateName(self,name):
         self.name = name
