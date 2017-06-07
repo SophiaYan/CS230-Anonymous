@@ -1,10 +1,16 @@
-import numpy as np
+# -*- coding: utf-8 -*-
+"""
+Created on Thu May 25 15:15:27 2017
+
+@author: Jingyu
+"""
+
 import os, sys
 import glob
-import csv
-import fnmatch
 from stat import *
 import json
+from ClassMseParser import *
+
 # allFiles = []
 # num = 1
 # for root, dirnames, filenames in os.walk(os.getcwd() + '/src'):
@@ -53,19 +59,31 @@ def walktree(top, callback, dict):
         elif S_ISREG(mode):
             # It's a file, call the callback function (leaf node)
             if f.endswith(".java"):
-                subdict = parse(top, f)
+                subdict = parseFile(top, f)
                 dict["children"].append(subdict)
                 callback(f)
         else:
             # Unknown file type, print a message
             print 'Skipping %s' % pathname
 
-def parse(dir, filename):
-    leaf = {"name": filename, "size" : 0}
-    return leaf
+
+def parseFile(dir, filename):
+    fileNode = {"name": filename, "children": [], "size" : 0}
+    pathname = os.path.join(dir, filename)
+    filename = pathname.rsplit('/', 2)[1] + '/' + filename
+    classIds = file2class[filename]
+    for classId in classIds:
+        classNode = ClassMseParser(classId,ClassDict)
+        fileNode["children"].append(classNode)
+    return fileNode
+    
+def parseClass(className, classId):
+    classNode = {"name": className, "children": [], "size": 0}
+    return classNode
     
 def visitfile(file):
     print 'visiting', file
+
 
 if __name__ == '__main__':
     dict = {"name": "root", "children" :[], "size":0}
