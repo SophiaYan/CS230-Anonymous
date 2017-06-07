@@ -14,6 +14,7 @@ Created on Thu May 25 15:15:27 2017
 import re
 import json
 from defination import * # including the defination of Class Method and Attribute
+from BuildSizeDict import *
     
 def BuildClassDict(infile):        
     patternForType = r"^\(FAMIX\.(\w+) \(id\: (\d+)\)$"
@@ -91,9 +92,11 @@ def BuildClassDict(infile):
             
     # we suppose to update the last processed object.
     # But, in our file, the last one is not within the three types we need, so we omit this step
-    
+    SizeDict = BuildSizeDict(infile)
     # after collect all information from file and build three dictionaries, update the class dictionary to match
     for mid in MethodDict:
+        if(mid in SizeDict):
+            MethodDict[mid].updateLOC(SizeDict[mid])
         cid =  MethodDict[mid].getParentType() # find the parent class id
         if cid not in ClassDict:
             continue
@@ -102,12 +105,17 @@ def BuildClassDict(infile):
         ClassDict[cid] = classObj #update the class dictionary
         
     for aid in AttrDict:
+        if(aid in SizeDict):
+            AttrDict[aid].updateLOC(SizeDict[aid])
         cid =  AttrDict[aid].getParentType() # find the parent class id
         if cid not in ClassDict:
             continue
         classObj = ClassDict[cid] # get the class object
         classObj.updateAttributes(AttrDict[aid]) # update Attributes list
         ClassDict[cid] = classObj #update the dictionary
+    for cid in ClassDict:
+        if(cid in SizeDict):
+            ClassDict[cid].updateLOC(SizeDict[cid])
     print "Finished!"
     return ClassDict
         
