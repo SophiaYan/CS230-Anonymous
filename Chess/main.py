@@ -26,7 +26,7 @@ def walktree(top, callback, dict):
         if S_ISDIR(mode):
             # It's a directory, recurse into it
             callback(f)
-            subdict = {"name": f, "children" :[], "size": 0}
+            subdict = {"name": f, "children" :[], "size": 0, "type" : "folder"}
             walktree(pathname, callback, subdict)
             dict["children"].append(subdict)
             dict["size"] = dict["size"] + subdict["size"]
@@ -44,7 +44,7 @@ def walktree(top, callback, dict):
         
 
 def parseFile(dir, filename):
-    fileNode = {"name": filename, "children": [], "size" : 0}
+    fileNode = {"name": filename, "children": [], "size" : 0, "type" : "file"}
     pathname = os.path.join(dir, filename)
     filename = pathname.rsplit('/', 2)[1] + '/' + filename
     classIds = file2class[filename]
@@ -56,9 +56,6 @@ def parseFile(dir, filename):
     fileNode["size"] = fileSize
     return fileNode
     
-def parseClass(className, classId):
-    classNode = {"name": className, "children": [], "size": 0}
-    return classNode
     
 def visitfile(file):
     print 'visiting', file
@@ -77,7 +74,7 @@ def GenerateDependenceJson(curlevel, InverseList, ClassDict, dict):
 
 if __name__ == '__main__':
     
-    hieDict = {"name": "root", "children" :[], "size":0}
+    hieDict = {"name": "root", "children" :[], "size": 0}
     walktree(os.getcwd() + "/src", visitfile, hieDict)
     with open('src_withChildType.json', 'w') as outfile:
         json.dump(hieDict, outfile, ensure_ascii=False, sort_keys = False)
