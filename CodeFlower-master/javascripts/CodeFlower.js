@@ -58,18 +58,23 @@ CodeFlower.prototype.update = function(json) {
   this.link.exit().remove();
 
   // Update the nodes
-  this.node = this.svg.selectAll("circle.node")
+  this.node = this.svg.selectAll("rect.node")
     .data(nodes, function(d) { return d.name; })
     .classed("collapsed", function(d) { return d._children ? 1 : 0; });
 
   this.node.transition()
-    .attr("r", function(d) { return d.children ? 3.5 : Math.pow(d.size, 2/5) || 1; });
+    .attr("width", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; })
+    .attr("height", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; });
+    //.attr("r", function(d) { return d.children ? 3.5 : Math.pow(d.size, 2/5) || 1; });
 
   // Enter any new nodes
-  this.node.enter().append('svg:circle')
+  // this.node.enter().append('svg:circle')
+  this.node.enter().append('svg:rect')
     .attr("class", "node")
     .classed('directory', function(d) { return (d._children || d.children) ? 1 : 0; })
-    .attr("r", function(d) { return d.children ? 3.5 : Math.pow(d.size, 2/5) || 1; })
+    .attr("width", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; })
+    .attr("height", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; })
+    // .attr("r", function(d) { return d.children ? 3.5 : Math.pow(d.size, 2/5) || 1; })
     .style("fill", function color(d) {
       return "hsl(" + parseInt(360 / total * d.id, 10) + ",90%,70%)";
     })
