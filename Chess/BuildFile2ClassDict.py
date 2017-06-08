@@ -13,7 +13,8 @@ Created on Tue Jun 06 18:38:56 2017
 
 def BuildFile2ClassDict(filename):
     toMatch = 'FAMIX.Class'
-    dict = {}
+    File2ClassDict = {}
+    ClassDict = {}
     with open(filename) as f:
         content = f.readlines()
     lines = [x.strip('\n') for x in content]
@@ -45,13 +46,15 @@ def BuildFile2ClassDict(filename):
             fileNameLine = lines[lines.index(sourceAnchorString) + 3]
             fileName = fileNameLine[(fileNameLine.find('(fileName ', 2) + 11):]
             fileName = fileName.split('\'')[0]
-    
-            if (dict.has_key(fileName) == True):
-                dict[fileName].append({classId: className})
+            
+            ClassDict.update({classId: className})
+            
+            if (File2ClassDict.has_key(fileName) == True):
+                File2ClassDict[fileName].append({classId: className})
             else:
-                dict.update({fileName: {classId: className}})
+                File2ClassDict.update({fileName: {classId: className}})
             
             cur = fileName + '(id: ' + sourceAnchorId + '): ' + className
             print cur
     
-    return dict
+    return ClassDict, File2ClassDict
