@@ -16,9 +16,14 @@ import re
 from defination import *
 from BuildClassDict import *
 from BuildFile2ClassDict import *
-
+from BuildDependGraph import *
 
 infile = "./src/src.mse"
 
 ClassDict = BuildClassDict(infile)
-file2class = BuildFile2ClassDict(infile)
+[FilteredClassDict, file2class] = BuildFile2ClassDict(infile)
+
+#update(FilteredClassDict)  # add PageRank Score
+AdjacentList = BuildAdjacentList(infile, FilteredClassDict, False)
+TopoList = list(toposort(AdjacentList))
+InverseList = BuildInverseList(infile, FilteredClassDict, False)

@@ -64,8 +64,25 @@ def visitfile(file):
     print 'visiting', file
 
 
+def GenerateDependenceJson(curlevel, InverseList, ClassDict, dict):
+    for curele in curlevel:
+        if (ClassDict.has_key(curele) == False):
+            continue
+        if (InverseList.has_key(curele)):
+            subdicts = {"name": ClassDict[curele].getName(), "children": [], "score": 0}
+            GenerateDependenceJson(InverseList[curele], InverseList, ClassDict, subdicts)
+            dict["children"].append(subdicts)
+        else: #leaf node, no descendents
+            dict["children"].append({"name": ClassDict[curele].getName(), "score": 0})
+
 if __name__ == '__main__':
-    dict = {"name": "root", "children" :[], "size":0}
-    walktree(os.getcwd() + "/src", visitfile, dict)
-    with open('src.json', 'w') as outfile:
-        json.dump(dict, outfile, ensure_ascii=False, sort_keys = False)
+    
+    hieDict = {"name": "root", "children" :[], "size":0}
+    walktree(os.getcwd() + "/src", visitfile, hieDict)
+    with open('src_withChildType.json', 'w') as outfile:
+        json.dump(hieDict, outfile, ensure_ascii=False, sort_keys = False)
+        
+    dependDict = {"name": "root", "children": []}
+    GenerateDependenceJson(TopoList[0], InverseList, ClassDict, dependDict)
+    with open('dependence.json', 'w') as outfile:
+        json.dump(dependDict, outfile, ensure_ascii=False, sort_keys = False)
