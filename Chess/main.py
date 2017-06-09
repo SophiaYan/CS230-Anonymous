@@ -26,7 +26,7 @@ def walktree(top, callback, dict):
         if S_ISDIR(mode):
             # It's a directory, recurse into it
             callback(f)
-            subdict = {"name": f, "children" :[], "size": 0, "type" : "folder"}
+            subdict = {"name": f, "children" :[], "size": 0, "type" : "Folder"}
             walktree(pathname, callback, subdict)
             dict["children"].append(subdict)
             dict["size"] = dict["size"] + subdict["size"]
@@ -44,7 +44,7 @@ def walktree(top, callback, dict):
         
 
 def parseFile(dir, filename):
-    fileNode = {"name": filename, "children": [], "size" : 0, "type" : "file"}
+    fileNode = {"name": filename, "children": [], "size" : 0, "type" : "File"}
     pathname = os.path.join(dir, filename)
     filename = pathname.rsplit('/', 2)[1] + '/' + filename
     classIds = file2class[filename]
@@ -72,12 +72,13 @@ def GenerateDependenceJson(curlevel, InverseList, ClassDict, dict):
         else: #leaf node, no descendents
             dict["children"].append({"name": ClassDict[curele].getName(), "score": 0})
 
-if __name__ == '__main__':
-    
+
+
+if __name__ == '__main__':    
     hieDict = {"name": "root", "children" :[], "size": 0}
     walktree(os.getcwd() + "/src", visitfile, hieDict)
     with open('src_withChildType.json', 'w') as outfile:
-        json.dump(hieDict, outfile, ensure_ascii=False, sort_keys = False)
+        json.dump(hieDict, outfile, ensure_ascii = False, sort_keys = False)
         
     dependDict = {"name": "root", "children": []}
     GenerateDependenceJson(TopoList[0], InverseList, ClassDict, dependDict)
