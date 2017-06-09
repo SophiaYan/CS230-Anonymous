@@ -2,62 +2,82 @@
 <html>
   <!-- Use the Source, Luke -->
   <head>
-    <title>CodeFlower Source code visualization</title>
+    <title>CS230 Demo</title>
+    <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link type="text/css" rel="stylesheet" href="stylesheets/bootstrap.min.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="stylesheets/bootstrap-responsive.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Rosario:400,700' rel='stylesheet' type='text/css'>
     <link type="text/css" rel="stylesheet" href="stylesheets/style.css"/>
+  </head>  
+
+    <script type="text/javascript" src="javascripts/d3/d3.js"></script>
+    <script type="text/javascript" src="javascripts/d3/d3.geom.js"></script>
+    <script type="text/javascript" src="javascripts/d3/d3.layout.js"></script>
+    <script type="text/javascript" src="javascripts/CodeFlower.js"></script>
+    <script type="text/javascript" src="javascripts/dataConverter.js"></script>
+
+    <script type="text/javascript" src="javascripts/d3/d3.v3.min.js"></script>
+    <script type="text/javascript" src="javascripts/colorbrewer.v1.min.js"></script>
+
+    <script src="javascripts/legend.js"></script>
+
     <style type="text/css">
-/*circle.node {
-  cursor: pointer;
-  stroke: #000;
-  stroke-width: .5px;
-}
+      /*circle.node {
+        cursor: pointer;
+        stroke: #000;
+        stroke-width: .5px;
+      }
 
-circle.node.directory {
-  stroke: #9ecae1;
-  stroke-width: 2px;
-}
+      circle.node.directory {
+        stroke: #9ecae1;
+        stroke-width: 2px;
+      }
 
-circle.node.collapsed {
-  stroke: #555;
-}*/
+      circle.node.collapsed {
+        stroke: #555;
+      }
+*/
+      .nodetext {
+        fill: #252929;
+        font-weight: bold;
+        text-shadow: 0 0 0.2em white;
+      }
 
-rect.node {
-  cursor: pointer;
-  stroke: #000;
-  stroke-width: .5px;
-}
+      line.link {
+        fill: none;
+        stroke: #9ecae1;
+        stroke-width: 1.5px;
+      }
 
-rect.node.directory {
-  stroke: #9ecae1;
-  stroke-width: 2px;
-}
+      body, html {
+        width:100%;
+        height:100%;
+      }
+/*
+      div {
+        width:100%;
+        height:100%;
+      }
+*/     
 
-rect.node.collapsed {
-  stroke: #555;
-}
-
-.nodetext {
-  fill: #252929;
-  font-weight: bold;
-  text-shadow: 0 0 0.2em white;
-}
-
-line.link {
-  fill: none;
-  stroke: #9ecae1;
-  stroke-width: 1.5px;
-}
+     /* #vizcontainer {
+        width:100%;
+        height:80%;
+      }
+      svg {
+        width: 100%;
+        height: 80%;
+      }*/
     </style>
-  </head>
-  <body>
+  
+  <body onload="legendDemo()">
     <div class="content">
       <div class="container">
-        <h1>CodeFlower Source code visualization</h1>
-        <p class="lead">This experiment visualizes source repositories using an interactive tree. Each disc represents a file, with a radius proportional to the number of lines of code (loc). All rendering is done client-side, in JavaScript. Try hovering on nodes to see the loc number, clicking on directory nodes to fold them, dragging nodes to rearrange the layout, and changing project to see different tree structures. Built with <a href="https://github.com/mbostock/d3">d3.js</a>. Inspired by <a href="https://code.google.com/p/codeswarm/">Code Swarm</a> and <a href="https://code.google.com/p/gource/">Gource</a>.</p>
+        <h1>CS230 Team Anonymous Demo</h1>
+        <p class="lead"> Todo:// This experiment visualizes source repositories using an interactive tree. Each disc represents a file, with a radius proportional to the number of lines of code (loc). All rendering is done client-side, in JavaScript. Try hovering on nodes to see the loc number, clicking on directory nodes to fold them, dragging nodes to rearrange the layout, and changing project to see different tree structures. Built with <a href="https://github.com/mbostock/d3">d3.js</a>. Inspired by <a href="https://code.google.com/p/codeswarm/">Code Swarm</a> and <a href="https://code.google.com/p/gource/">Gource</a>.</p>
+
         <form class="form-inline">
           <fieldset>
           <label>Example projects from GitHub:</label>
@@ -76,7 +96,12 @@ line.link {
           </select>
           </fieldset>
         </form>
-        <div id="visualization"></div>        
+
+        <div id="visualization">
+          <svg id="vizlegend"></svg>
+        </div>  
+
+  
         <form id="jsonInput">
         <fieldset>
           <textarea id="jsonData"></textarea>
@@ -86,8 +111,6 @@ line.link {
         </fieldset>
         </form>
 
-
-       
         <p>Once you have a loc metrics file, paste its content below and click on the convert button. This will update the CodeFlower and the JSON textarea, to let you save data for your own CodeFlowers.</p>
         <form id="jsonConverter">
         <fieldset>
@@ -102,50 +125,62 @@ line.link {
         </fieldset>
         </form>
 
-    </div>
-    <script type="text/javascript" src="javascripts/d3/d3.js"></script>
-    <script type="text/javascript" src="javascripts/d3/d3.geom.js"></script>
-    <script type="text/javascript" src="javascripts/d3/d3.layout.js"></script>
-    <script type="text/javascript" src="javascripts/CodeFlower.js"></script>
-    <script type="text/javascript" src="javascripts/dataConverter.js"></script>
-    <script src="legend.js"></script>
-    <script type="text/javascript">
-    <script type=>
-      var currentCodeFlower;
-      var createCodeFlower = function(json) {
+      </div>
+    </div>  
+
+
+    <footer>
+      <script type="text/javascript">
+        var currentCodeFlower;
+        var createCodeFlower = function(json) {
   
-        // update the jsonData textarea
-        document.getElementById('jsonData').value = JSON.stringify(json);
-        // remove previous flower to save memory
-        if (currentCodeFlower) currentCodeFlower.cleanup();
-        // adapt layout size to the total number of elements
-        var total = countElements(json);
-        w = parseInt(Math.sqrt(total) * 30, 10);
-        h = parseInt(Math.sqrt(total) * 30, 10);
-        // create a new CodeFlower
-        currentCodeFlower = new CodeFlower("#visualization", w, h).update(json);
-      };
+          // update the jsonData textarea
+          document.getElementById('jsonData').value = JSON.stringify(json);
+          // remove previous flower to save memory
+          if (currentCodeFlower) currentCodeFlower.cleanup();
+          // adapt layout size to the total number of elements
+          var total = countElements(json);
+          w = parseInt(Math.sqrt(total) * 30, 10) * 1.3;
+          h = parseInt(Math.sqrt(total) * 30, 10) * 1.1;
+          // create a new CodeFlower
+          currentCodeFlower = new CodeFlower("#visualization", w, h).update(json);
+        };
 
-      d3.json('chess.json', createCodeFlower);
+        d3.json('chess.json', createCodeFlower);
 
 
-      document.getElementById('project').addEventListener('change', function() {
-        d3.json(this.value, createCodeFlower);
-      });
-      document.getElementById('jsonInput').addEventListener('submit', function(e) {
-        e.preventDefault();
-        document.getElementById('visualization').scrollIntoView();
-        var json = JSON.parse(document.getElementById('jsonData').value);
-        currentCodeFlower.update(json);
-      });
-      document.getElementById('jsonConverter').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var origin = this.children[0].children[0].value;
-        var data = this.children[0].children[1].value;
-        var json = convertToJSON(data, origin);
-        document.getElementById('visualization').scrollIntoView();
-        createCodeFlower(json);
-      });
-    </script>
+        document.getElementById('project').addEventListener('change', function() {
+          d3.json(this.value, createCodeFlower);
+        });
+        document.getElementById('jsonInput').addEventListener('submit', function(e) {
+          e.preventDefault();
+          document.getElementById('visualization').scrollIntoView();
+          var json = JSON.parse(document.getElementById('jsonData').value);
+          currentCodeFlower.update(json);
+        });
+        document.getElementById('jsonConverter').addEventListener('submit', function(e) {
+          e.preventDefault();
+          var origin = this.children[0].children[0].value;
+          var data = this.children[0].children[1].value;
+          var json = convertToJSON(data, origin);
+          document.getElementById('visualization').scrollIntoView();
+          createCodeFlower(json);
+          legendDemo();
+        });
+
+
+        function legendDemo() {
+
+          sampleCategoricalData = ["Folder","File", "Class", "Method", "Attribute"]
+          sampleOrdinal = d3.scale.category20().domain(sampleCategoricalData);
+
+          verticalLegend = d3.svg.legend().labelFormat("none").cellPadding(5).orientation("vertical").units("Color Legend").cellWidth(25).cellHeight(18).inputScale(sampleOrdinal).cellStepping(10);
+
+          d3.select("svg").append("g").attr("transform", "translate(570,30)").attr("class", "legend").call(verticalLegend);
+
+        }
+
+      </script>
+    </footer>
   </body>
 </html>

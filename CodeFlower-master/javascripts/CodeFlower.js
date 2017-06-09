@@ -63,29 +63,24 @@ CodeFlower.prototype.update = function(json) {
     .classed("collapsed", function(d) { return d._children ? 1 : 0; });
 
   this.node.transition()
-    // .attr("width", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; })
-    // .attr("height", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; });
     .attr("r", function(d) { return d.children ? 3.5 : Math.pow(d.size, 3/5) || 1; });
 
   // Enter any new nodes
   this.node.enter().append('svg:circle')
-  // this.node.enter().append('svg:rect')
     .attr("class", "node")
     .classed('directory', function(d) { return (d._children || d.children) ? 1 : 0; })
-    // .attr("width", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; })
-    // .attr("height", function(d) { return d.children ? 5.5 : 4 + Math.pow(d.size, 2/5) * 2 || 5; })
     .attr("r", function(d) { 
       if (d.type == "folder") { return 3.5}
       else if (d.type == "file") { return Math.pow(d.size, 2/5)}
       else if (d.type == "Class") { return Math.pow(d.size, 2/5)}
       else if (d.type == "Method") { return Math.pow(d.size, 3/5) }
-      else { return d.children ? 3.5 : Math.pow(d.size, 3/5) || 1; }})
+      else { return  2}})
     .style("fill", function color(d) {
-      if (d.type == "folder") { return "hsl(" + parseInt(360 / total * 250, 10) + ",90%,70%)" }
-      else if (d.type == "file") { return "hsl(" + parseInt(360 / total * 120, 10) + ",90%,70%)" }
-      else if (d.type == "Class") { return "hsl(" + parseInt(360 / total * 150, 10) + ",90%,70%)" }
-      else if (d.type == "Method") { return "hsl(" + parseInt(360 / total * 180, 10) + ",90%,70%)" }
-      else { return "hsl(" + parseInt(360 / total * 50, 10) + ",90%,70%)"; }
+      if (d.type == "folder") { return "hsl(207,89%,34%)" }
+      else if (d.type == "file") { return "hsl(207,56%,75%)" }
+      else if (d.type == "Class") { return "hsl(32,100%,50%)" }
+      else if (d.type == "Method") { return "hsl(32,100%,78%)" }
+      else if (d.type == "Attribute") { return "hsl(118,100%,26%)" ; }
     })
     .call(this.force.drag)
     .on("click", this.click.bind(this))
