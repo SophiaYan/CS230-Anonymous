@@ -19,11 +19,11 @@ def ClassMseParser(cid, ClassDict):
     
     dict = {"name":classObj.getName(),"children":[],"size":classObj.getLOC(), "type" : "Class"}
     for methodObj in classObj.getMethods():
-        subDict = {"name":"Method: " + methodObj.getName(),"size":methodObj.getLOC(), "type":"Method"}
+        subDict = {"name": methodObj.getName(),"size":methodObj.getLOC(), "type":"Method"}
         dict["children"].append(subDict)
     
     for attrObj in classObj.getAttributes():
-        subDict = {"name":"Attribute: "+ attrObj.getName(),"size":attrObj.getLOC(), "type":"Attribute"}
+        subDict = {"name": attrObj.getName(),"size":attrObj.getLOC(), "type":"Attribute"}
         dict["children"].append(subDict)
     return dict
 

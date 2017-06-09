@@ -5,7 +5,8 @@ Created on Wed Jun  7 14:52:52 2017
 
 @author: shaojy11
 """
-
+import networkx as nx
+import numpy as np
 from toposort import *
 
 def BuildEdgeList(filename, FilteredClassDict, filtered):
@@ -34,7 +35,7 @@ def BuildEdgeList(filename, FilteredClassDict, filtered):
                     print superClassId + "->" + subClassId
                     EdgeList.append((subClassId + ' ', superClassId))
             else:
-                EdgeList.append((subClassId + ' ', superClassId))
+                EdgeList.append((subClassId, superClassId))
             
     return EdgeList
 
@@ -111,6 +112,14 @@ def BuildInverseList(filename,FilteredClassDict, filtered):
             
     return InverseList
  
+# input: edgelist, top * rank
+def cal_classrank(edgelist,top_num):
+    g = nx.Graph(edgelist)
+    pg = nx.pagerank(g, alpha=0.8)
+    top_rank = sorted(pg.items(), key=lambda x: x[1], reverse=True)[0:top_num]
+    return pg, top_rank
+
+
 #if __name__ == '__main__':
 #    EdgeList = BuildEdgeList('./src/src.mse', False)
 #    with open('sub2super.txt', 'w') as outfile:
