@@ -108,7 +108,9 @@ line.link {
     <script type="text/javascript" src="javascripts/d3/d3.layout.js"></script>
     <script type="text/javascript" src="javascripts/CodeFlower.js"></script>
     <script type="text/javascript" src="javascripts/dataConverter.js"></script>
+    <script src="legend.js"></script>
     <script type="text/javascript">
+    <script type=>
       var currentCodeFlower;
       var createCodeFlower = function(json) {
   
@@ -124,7 +126,7 @@ line.link {
         currentCodeFlower = new CodeFlower("#visualization", w, h).update(json);
       };
 
-      d3.json('data.json', createCodeFlower);
+      d3.json('chess.json', createCodeFlower);
 
 
       document.getElementById('project').addEventListener('change', function() {
