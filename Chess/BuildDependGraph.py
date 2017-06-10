@@ -8,6 +8,7 @@ Created on Wed Jun  7 14:52:52 2017
 import networkx as nx
 import numpy as np
 from toposort import *
+import math
 
 def BuildEdgeList(filename, FilteredClassDict, filtered):
     EdgeList = []
@@ -113,11 +114,13 @@ def BuildInverseList(filename,FilteredClassDict, filtered):
     return InverseList
  
 # input: edgelist, top * rank
-def cal_classrank(edgelist,top_num):
+def cal_classrank(edgelist):
     g = nx.Graph(edgelist)
     pg = nx.pagerank(g, alpha=0.8)
-    top_rank = sorted(pg.items(), key=lambda x: x[1], reverse=True)[0:top_num]
-    return pg, top_rank
+    top_rank = sorted(pg.items(), key=lambda x: x[1], reverse=True)[0:len(pg)]
+    for i in range(len(top_rank)):
+        top_rank[i] = [top_rank[i][0], int(math.ceil(i / ((float)(len(top_rank)) / 5) + 0.0001))]
+    return top_rank
 
 
 #if __name__ == '__main__':
