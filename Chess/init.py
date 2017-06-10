@@ -24,6 +24,9 @@ ClassDict = BuildClassDict(infile)
 [FilteredClassDict, file2class] = BuildFile2ClassDict(infile)
 
 #update(FilteredClassDict)  # add PageRank Score
-AdjacentList = BuildAdjacentList(infile, FilteredClassDict, False)
+filtered = False
+AdjacentList = BuildAdjacentList(infile, FilteredClassDict, filtered)
 TopoList = list(toposort(AdjacentList))
-InverseList = BuildInverseList(infile, FilteredClassDict, False)
+InverseList = BuildInverseList(infile, FilteredClassDict, filtered)
+EdgeList = BuildEdgeList(infile, FilteredClassDict, filtered)
+RankedList = cal_classrank(EdgeList,len(AdjacentList) / 10)
