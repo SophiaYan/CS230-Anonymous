@@ -118,9 +118,11 @@ def cal_classrank(edgelist):
     g = nx.Graph(edgelist)
     pg = nx.pagerank(g, alpha=0.8)
     top_rank = sorted(pg.items(), key=lambda x: x[1], reverse=True)[0:len(pg)]
+    RankedList = {}
     for i in range(len(top_rank)):
         top_rank[i] = [top_rank[i][0], int(math.ceil(i / ((float)(len(top_rank)) / 5) + 0.0001))]
-    return top_rank
+        RankedList.update({top_rank[i][0]: top_rank[i][1]})
+    return RankedList
 
 
 #if __name__ == '__main__':

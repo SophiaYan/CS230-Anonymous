@@ -66,11 +66,11 @@ def GenerateDependenceJson(curlevel, InverseList, RankedList, ClassDict, dict):
         if (ClassDict.has_key(curele) == False):
             continue
         if (InverseList.has_key(curele)):
-            subdicts = {"name": ClassDict[curele].getName(), "children": [], "score": RankedList[0][curele]}
+            subdicts = {"name": ClassDict[curele].getName(), "children": [], "score": RankedList[curele]}
             GenerateDependenceJson(InverseList[curele], InverseList, RankedList, ClassDict, subdicts)
             dict["children"].append(subdicts)
         else: #leaf node, no descendents
-            dict["children"].append({"name": ClassDict[curele].getName(), "score": RankedList[0][curele]})
+            dict["children"].append({"name": ClassDict[curele].getName(), "score": RankedList[curele]})
 
 
 
