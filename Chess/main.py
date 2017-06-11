@@ -61,16 +61,16 @@ def visitfile(file):
     print 'visiting', file
 
 
-def GenerateDependenceJson(curlevel, InverseList, ClassDict, dict):
+def GenerateDependenceJson(curlevel, InverseList, RankedList, ClassDict, dict):
     for curele in curlevel:
         if (ClassDict.has_key(curele) == False):
             continue
         if (InverseList.has_key(curele)):
-            subdicts = {"name": ClassDict[curele].getName(), "children": [], "score": 0}
-            GenerateDependenceJson(InverseList[curele], InverseList, ClassDict, subdicts)
+            subdicts = {"name": ClassDict[curele].getName(), "children": [], "score": RankedList[curele]}
+            GenerateDependenceJson(InverseList[curele], InverseList, RankedList, ClassDict, subdicts)
             dict["children"].append(subdicts)
         else: #leaf node, no descendents
-            dict["children"].append({"name": ClassDict[curele].getName(), "score": 0})
+            dict["children"].append({"name": ClassDict[curele].getName(), "score": RankedList[curele]})
 
 
 
@@ -81,6 +81,6 @@ if __name__ == '__main__':
         json.dump(hieDict, outfile, ensure_ascii = False, sort_keys = False)
         
     dependDict = {"name": "root", "children": []}
-    GenerateDependenceJson(TopoList[0], InverseList, ClassDict, dependDict)
+    GenerateDependenceJson(TopoList[0], InverseList, RankedList, ClassDict, dependDict)
     with open('dependence.json', 'w') as outfile:
         json.dump(dependDict, outfile, ensure_ascii=False, sort_keys = False)
