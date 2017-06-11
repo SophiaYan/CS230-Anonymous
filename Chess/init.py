@@ -20,7 +20,7 @@ from BuildDependGraph import *
 import time
 
 start_time = time.clock()
-proj = 'cassandra-1.2.0-rc1'
+proj = 'cassandra-1.0'
 #top = './src/'
 #infile = top + 'src.mse'
 top = '/Users/shaojy11/Downloads/' + proj + '/'

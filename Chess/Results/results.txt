@@ -16,13 +16,17 @@ https://www.easemob.com/download
 https://github.com/junit-team/junit4
 25.560746 seconds + 0.300489 seconds,  LOC: 46002
 
-5.cassandra-1.2
+5.cassandra-1.0
+https://github.com/apache/cassandra/tree/cassandra-1.0
+10.334s + 140.981103s + 0.57157s, LOC: 181152
+
+6.cassandra-1.2
 https://github.com/apache/cassandra/releases/tag/cassandra-1.2.0-rc1
 261.729179 seconds + 0.740419 seconds, LOC: 246109
 
 
 Fail:
-6. cassandra-3.11
+7. cassandra-3.11
 https://github.com/apache/cassandra
 Over 10 minutes
 fail

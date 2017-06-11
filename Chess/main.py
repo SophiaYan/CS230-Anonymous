@@ -82,15 +82,15 @@ def GenerateDependenceJson(curlevel, InverseList, RankedList, ClassDict, dict):
 
 
 if __name__ == '__main__':
-    #start_time = time.clock()
+ #   start_time = time.clock()
     
     
     # Preparations
-    proj = 'chess'
-    top = './src/'
-    infile = top + 'src.mse'
-    #top = '/Users/shaojy11/Downloads/' + proj + '/'
-    #infile = top + proj + '.mse'
+    proj = 'cassandra-1.0'
+#    top = './src/'
+#    infile = top + 'src.mse'
+    top = '/Users/shaojy11/Downloads/' + proj + '/'
+    infile = top + proj + '.mse'
     
     ClassDict = BuildClassDict(infile)
     [FilteredClassDict, file2class] = BuildFile2ClassDict(infile, top)
@@ -101,6 +101,7 @@ if __name__ == '__main__':
     InverseList = BuildInverseList(infile, FilteredClassDict, filtered)
     EdgeList = BuildEdgeList(infile, FilteredClassDict, filtered)
     RankedList = cal_classrank(EdgeList)
+    
     
     # Build 2 trees
     outfile1 = './Results/' + proj + '/' + proj + '_hierarchy.json'
@@ -117,4 +118,4 @@ if __name__ == '__main__':
         json.dump(dependDict, outfile, ensure_ascii = False, sort_keys = False)
         
         
-    #print time.clock() - start_time, "seconds"
+   # print time.clock() - start_time, "seconds"
