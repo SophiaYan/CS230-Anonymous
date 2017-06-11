@@ -8,10 +8,10 @@ Created on Tue Jun 06 18:38:56 2017
 # Input: MSE file
 # Output: dictionary / mapping between file and class
 # Output Data Structure:
-    # File : {ClassID : ClassName}
+    # File2ClassDict - File : [{ClassID : ClassName}]
+    # ClassDict - {classId: className}
 
-
-def BuildFile2ClassDict(filename):
+def BuildFile2ClassDict(filename, top):
     toMatch = 'FAMIX.Class'
     File2ClassDict = {}
     ClassDict = {}
@@ -49,12 +49,12 @@ def BuildFile2ClassDict(filename):
             
             ClassDict.update({classId: className})
             
-            if (File2ClassDict.has_key(fileName) == True):
-                File2ClassDict[fileName].append({classId: className})
+            if (File2ClassDict.has_key(top + fileName) == True):
+                File2ClassDict[top + fileName].append(classId)
             else:
-                File2ClassDict.update({fileName: {classId: className}})
+                File2ClassDict.update({(top + fileName): [classId]})
             
             cur = fileName + '(id: ' + sourceAnchorId + '): ' + className
-            print cur
+            #print cur
     
     return ClassDict, File2ClassDict

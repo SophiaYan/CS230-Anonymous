@@ -87,8 +87,8 @@ def BuildClassDict(infile):
                         elif aname == "signature":
                             newTypObj.updateSignture(amatch.group(2))
             cnt+=1
-            if cnt%1000 == 0:
-                print "Processing Line: " + str(cnt)
+            #if cnt%1000 == 0:
+                #print "Processing Line: " + str(cnt)
             
     # we suppose to update the last processed object.
     # But, in our file, the last one is not within the three types we need, so we omit this step

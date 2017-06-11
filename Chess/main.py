@@ -10,12 +10,18 @@ import glob
 from stat import *
 import json
 from ClassMseParser import *
-
+import re
+from defination import *
+from BuildClassDict import *
+from BuildFile2ClassDict import *
+from BuildDependGraph import *
+import time
 # Recursively generate .json file by DFS
 # Input: All the files under workingDir/src
 # Ouptput: src.json (dict)
 # Please run it under the directory above /src
     
+@profile(precision=4)
 def walktree(top, callback, dict):
     '''recursively descend the directory tree rooted at top,
        calling the callback function for each regular file'''
@@ -25,7 +31,7 @@ def walktree(top, callback, dict):
         mode = os.stat(pathname)[ST_MODE]
         if S_ISDIR(mode):
             # It's a directory, recurse into it
-            callback(f)
+            #callback(f)
             subdict = {"name": f, "children" :[], "size": 0, "type" : "Folder"}
             walktree(pathname, callback, subdict)
             dict["children"].append(subdict)
@@ -33,11 +39,12 @@ def walktree(top, callback, dict):
         elif S_ISREG(mode):
             # It's a file, call the callback function (leaf node)
             if f.endswith(".java"):
-                fileNode = parseFile(top, f)
+                if (file2class.has_key(pathname)):
+                    fileNode = parseFile(top, f)
                 # fileNode = {"name": f, "size": 100}
-                dict["children"].append(fileNode)
-                dict["size"] = dict["size"] + fileNode["size"]
-                callback(f)
+                    dict["children"].append(fileNode)
+                    dict["size"] = dict["size"] + fileNode["size"]
+                    #callback(f)
         else:
             # Unknown file type, print a message
             print 'Skipping %s' % pathname
@@ -46,8 +53,8 @@ def walktree(top, callback, dict):
 def parseFile(dir, filename):
     fileNode = {"name": filename, "children": [], "size" : 0, "type" : "File"}
     pathname = os.path.join(dir, filename)
-    filename = pathname.rsplit('/', 2)[1] + '/' + filename
-    classIds = file2class[filename]
+    #filename = pathname.rsplit('/', 2)[1] + '/' + filename
+    classIds = file2class[pathname]
     fileSize = 0
     for classId in classIds:
         classNode = ClassMseParser(classId,ClassDict)
@@ -60,10 +67,10 @@ def parseFile(dir, filename):
 def visitfile(file):
     print 'visiting', file
 
-
+@profile(precision=4)
 def GenerateDependenceJson(curlevel, InverseList, RankedList, ClassDict, dict):
     for curele in curlevel:
-        if (ClassDict.has_key(curele) == False):
+        if (ClassDict.has_key(curele) == False or RankedList.has_key(curele) == False):
             continue
         if (InverseList.has_key(curele)):
             subdicts = {"name": ClassDict[curele].getName(), "children": [], "score": RankedList[curele]}
@@ -74,13 +81,40 @@ def GenerateDependenceJson(curlevel, InverseList, RankedList, ClassDict, dict):
 
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
+    #start_time = time.clock()
+    
+    
+    # Preparations
+    proj = 'chess'
+    top = './src/'
+    infile = top + 'src.mse'
+    #top = '/Users/shaojy11/Downloads/' + proj + '/'
+    #infile = top + proj + '.mse'
+    
+    ClassDict = BuildClassDict(infile)
+    [FilteredClassDict, file2class] = BuildFile2ClassDict(infile, top)
+    
+    filtered = False
+    AdjacentList = BuildAdjacentList(infile, FilteredClassDict, filtered)
+    TopoList = list(toposort(AdjacentList))
+    InverseList = BuildInverseList(infile, FilteredClassDict, filtered)
+    EdgeList = BuildEdgeList(infile, FilteredClassDict, filtered)
+    RankedList = cal_classrank(EdgeList)
+    
+    # Build 2 trees
+    outfile1 = './Results/' + proj + '/' + proj + '_hierarchy.json'
+    outfile2 = './Results/' + proj + '/' + proj + '_dependency.json'
+    
     hieDict = {"name": "root", "children" :[], "size": 0}
-    walktree(os.getcwd() + "/src", visitfile, hieDict)
-    with open('src_withChildType.json', 'w') as outfile:
+    walktree(top, visitfile, hieDict)
+    with open(outfile1, 'w') as outfile:
         json.dump(hieDict, outfile, ensure_ascii = False, sort_keys = False)
         
     dependDict = {"name": "root", "children": []}
     GenerateDependenceJson(TopoList[0], InverseList, RankedList, ClassDict, dependDict)
-    with open('dependence.json', 'w') as outfile:
-        json.dump(dependDict, outfile, ensure_ascii=False, sort_keys = False)
+    with open(outfile2, 'w') as outfile:
+        json.dump(dependDict, outfile, ensure_ascii = False, sort_keys = False)
+        
+        
+    #print time.clock() - start_time, "seconds"

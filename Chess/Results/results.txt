@@ -1,0 +1,28 @@
+Success:
+1. chess
+https://github.com/mukichou/cs242-1/tree/master/Assignment1.2/Chess
+0.19822 seconds + 0.015216 seconds£¬ LOC: 2421
+
+2.servlet
+https://github.com/seam/servlet/tree/master
+0.266985 seconds + 0.030696 seconds,  LOC: 2569
+
+
+3.Android SDK
+https://www.easemob.com/download
+3.813769 seconds + 0.165782 seconds, LOC: 19630
+
+4.junit4
+https://github.com/junit-team/junit4
+25.560746 seconds + 0.300489 seconds,  LOC: 46002
+
+5.cassandra-1.2
+https://github.com/apache/cassandra/releases/tag/cassandra-1.2.0-rc1
+261.729179 seconds + 0.740419 seconds, LOC: 246109
+
+
+Fail:
+6. cassandra-3.11
+https://github.com/apache/cassandra
+Over 10 minutes
+fail

@@ -33,7 +33,7 @@ def BuildEdgeList(filename, FilteredClassDict, filtered):
             superClassId = superClassId.split(')')[0]
             if (filtered):
                 if (FilteredClassDict.has_key(subClassId) and FilteredClassDict.has_key(superClassId)):
-                    print superClassId + "->" + subClassId
+                    #print superClassId + "->" + subClassId
                     EdgeList.append((subClassId + ' ', superClassId))
             else:
                 EdgeList.append((subClassId, superClassId))
@@ -63,7 +63,7 @@ def BuildAdjacentList(filename,FilteredClassDict, filtered):
             superClassId = superClassId.split(')')[0]
             if (filtered):
                 if (FilteredClassDict.has_key(subClassId) and FilteredClassDict.has_key(superClassId)):
-                    print superClassId + "->" + subClassId
+                    #print superClassId + "->" + subClassId
                     if (AdjacentList.has_key(subClassId)):
                         AdjacentList[subClassId].add(superClassId)
                     else:
@@ -100,7 +100,7 @@ def BuildInverseList(filename,FilteredClassDict, filtered):
             superClassId = superClassId.split(')')[0]
             if (filtered):
                 if (FilteredClassDict.has_key(subClassId) and FilteredClassDict.has_key(superClassId)):
-                    print superClassId + "->" + subClassId
+                    #print superClassId + "->" + subClassId
                     if (InverseList.has_key(superClassId)):
                         InverseList[superClassId].add(subClassId)
                     else:
