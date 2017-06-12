@@ -86,7 +86,7 @@ if __name__ == '__main__':
     
     
     # Preparations
-    proj = 'cassandra-1.0'
+    proj = 'spring-core'
 #    top = './src/'
 #    infile = top + 'src.mse'
     top = '/Users/shaojy11/Downloads/' + proj + '/'
